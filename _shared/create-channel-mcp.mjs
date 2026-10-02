@@ -31,10 +31,14 @@ function resolveRunner() {
   if (process.env.ZC_SCOUT_RUNNER) {
     return resolve(process.env.ZC_SCOUT_RUNNER);
   }
+  // Host / monorepo：优先瘦 ts，按渠冷启不拖死对话
+  if (process.env.ZC_MONOREPO_ROOT) {
+    const ts = resolve(resolveMonorepoRoot(), 'backend/scripts/zc-board-scout-runner.ts');
+    if (existsSync(ts)) return ts;
+  }
   if (existsSync(STANDALONE_BUNDLE)) {
     return STANDALONE_BUNDLE;
   }
-  // 统一 B2+B4 runner（旧 b4-only 脚本仍可被 ZC_SCOUT_RUNNER 覆盖）
   return resolve(resolveMonorepoRoot(), 'backend/scripts/zc-board-scout-runner.ts');
 }
 
